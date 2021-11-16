@@ -1,0 +1,150 @@
+---
+title: "重新認識 Javascript"
+publishedAt: "2021-10-01"
+summary: "這是一篇我重新認識 Javascript 的筆記，其中包含原型鏈、原始型別、物件型別、閉包等等觀念。"
+image: "/static/images/banner.jpeg"
+---
+
+## 目錄
+
+1. [語法介紹](/blog/re-javascript#1)
+2. [語言特性](/blog/re-javascript#2)
+3. [寫作風格](/blog/re-javascript#3)
+4. [物件導向](/blog/re-javascript#4)
+5. [物件繼承](/blog/re-javascript#5)
+6. [設計模式](/blog/re-javascript#6)
+7. [語法應用](/blog/re-javascript#7)
+
+## 語法介紹<a name="1" />
+
+### 型別系統
+
+JavaScript 的型別分為「原始型別」和「物件型別」兩大類，原始型別沒有屬性與方法，物
+件型別則可任意存取屬性與方法。但像字串可以使用 split 等方法是因為原始型別會自動裝箱(boxing)
+成原始型別包裹物件(Primitive Wrapper)，結束後在拆箱(unboxing)成原始型別。
+
+```JavaScript
+var str="string";
+console.log(typeof str); // string
+str.val=100;
+console.log(str.val) // undefined
+var obj= new String("string");
+console.log(typeof obj); // object
+obj.val=100;
+console.log(obj.val); // 100
+console.log(typeof obj.valueOf()); // string
+```
+
+### undefined & null
+
+undefined 是指已經宣告卻沒有賦予任何的值但 null 的意思是 **沒有值** 的值。
+且兩者皆屬於 falsy value。而預設值只會出現 undefined 而不是 null。
+
+### falsy value
+
+在 JavaScript 中總共有以下 8 個 falsy value
+
+- false
+- 0
+- -0
+- 0n
+- "",'',``
+- null
+- undefined
+- NaN
+
+### function arguments
+
+若傳入方法的參數數量是動態的，我們可以使用 arguments 來處理這種情況。
+但 arguments 本身並不是標準陣列，因此不能直接使用 sort 或是 slice 等陣列方法，
+所以我們可以透過下面的方式將 arguments 轉換成陣列。
+
+```Javascript
+function build() {
+    var args = new Array();
+    for (var i = 0; i < arguments.length; i++) {
+        args.push(arguments[i]);
+    }
+    args.forEach(function(item) {
+        console.log(item);
+    });
+}
+build(10, 20, 30)
+```
+
+### 立即函式 IIFE
+
+IIFE (Immediately Invoked Function Expression) 是一個定義完後馬上就執行的函式，
+常被使用在只會執行一次的程式碼，例如初始化的動作，並且可將程式碼包起來，形成一個區域，避免與全域變數汙染。
+
+```JavaScript
+var a = 100;
+(function(){
+    var b = true;
+    console.log(a); // 100
+})();
+console.log(b); // Error
+```
+
+若將全域變數區域化，則可以稍微提升執行效率，例如下方的 window 及 document 原本都屬於全域變數，
+但透過這種方式可以讓他區域化。
+
+```JavaScript
+(function (document, window) {
+   console.log(document);
+   console.log(window);
+})(document, window);
+```
+
+### finally
+
+finally 一定要和 try 或是 try catch 語句一起使用，在 finally 的區域內無論如何都一定會執行，
+當 try 內有 return 時，會先執行完畢 finally 區塊內的程式才會回傳。另外若是在 finally
+也內有 return，則會覆蓋掉 try 內的 return。
+
+```JavaScript
+function run() {
+   try {
+      return '123'
+   } finally {
+      console.log('xyz')
+   }
+}
+console.log(run())
+// xyz
+// 123
+```
+
+### switch
+
+因為有了 if else 就很少用到的語法，但若 if else 的結構太複雜，可以將 switch 中的 break
+刪掉來達到一樣的效果，但是程式碼更顯精簡。只要不加 break 就會由上往下判斷下去。
+
+```JavaScript
+var n = 1;
+switch (n) {
+    case 1:
+    case 2:
+    case 3:
+        console.log("n<3");
+        break;
+    case 4;
+    case 5;
+        console.log("n<3 & n<=5");
+        break;
+    default:
+        console.log("n>5")
+}
+```
+
+## 語言特性<a name="2" />
+
+## 寫作風格<a name="3" />
+
+## 物件導向<a name="4" />
+
+## 物件繼承<a name="5" />
+
+## 設計模式<a name="6" />
+
+## 語法應用<a name="7" />

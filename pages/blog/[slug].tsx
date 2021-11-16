@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-import { getMDXComponent } from "mdx-bundler/client";
+import { useMDXComponent } from "next-contentlayer/hooks";
 import components from "components/MDXComponents";
 import BlogLayout from "layouts/blog";
 import { allBlogs } from ".contentlayer/data";
@@ -10,10 +9,7 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
-  const Component = useMemo(
-    () => getMDXComponent(post.body.code),
-    [post.body.code]
-  );
+  const Component = useMDXComponent(post.body.code);
 
   return (
     <BlogLayout post={post}>

@@ -28,8 +28,11 @@ export default function ProjectCard({
         <p className="mt-1 text-gray-700 dark:text-gray-400">{description}</p>
 
         <div className="flex flex-wrap gap-2 mt-5">
-          {skills.map((skill) => (
-            <p className="text-gray-700 dark:text-gray-400 font-mono font-semibold text-xs">
+          {skills.map((skill, index) => (
+            <p
+              key={index}
+              className="text-gray-700 dark:text-gray-400 font-mono font-semibold text-xs"
+            >
               #{skill}
             </p>
           ))}
