@@ -1,0 +1,93 @@
+---
+title: "MERN Shop"
+description: "利用 Webpack, Typesciprt, TailwindCSS, Redux 並串接 Paypal 金流的電商網站"
+tech: "React,Webpack,Tailwind,Redux,PaypalAPI,Express,MongoDB"
+url: "https://lemon14454-mern-shop.herokuapp.com/"
+github: "https://github.com/lemon14454/MERN-Shop"
+---
+
+<Image
+  alt={`MERN Shop`}
+  src={`/static/images/projects/mern-shop/home.png`}
+  width={2560}
+  height={1304}
+  priority
+/>
+
+## MERN Shop
+
+一個全端的電商網站，MERN 分別代表 MongoDB、Express、React、NodeJS，而後端部分則照 MVC
+架構開發。起初原型來自 Brad Traversy 的 Udemy 課程，原課程則是使用 React Boostrap
+及舊版的 Redux 作為開發，不得不說當初跟著做完的確學習了不少東西。但之後我陸續學習了
+Webpack、Tailwind、Typescript、Redux Tool Kit 等技術，就將原本的專案打造成全新的樣貌。
+
+## 使用技術
+
+- React
+- Tailwind
+- Webpack
+- Redux Tool Kit
+- PaypalAPI
+- MongoDB、Express
+- Typesciprt
+
+對我而言其實一直不想自行去開發後端，所以這算是少數有自己著手的全端作品，基本的 MVC 架構及 Middleware
+等等還是瞭解的。
+
+## Redux 與 Typesciprt
+
+當初在學習完 Typesciprt 之後想馬上用在作品上面，但我自己覺得要讓舊版 Redux Type Safe
+真的是一件麻複雜的事，網路上大家的架構也都不大一樣，後來得知有新出的 RTK 之後似乎就減少了這個難度，
+官方本身也很推薦用 TS 來寫心的 RTK。
+
+新舊版比較下來雖然新的 RTK 節省了超級多的程式碼，但舊版撇除 Type Safe 的問題的話還是比較直觀一點。
+以目前的經驗來看，我可能還是會選擇用原生的 React Context 來完成 state management。
+
+## 作品畫面
+
+下面就放一些作品畫面，詳細內容還請至網站上觀看。
+
+### 商品內容
+
+在首頁按下各個商品後所進入的頁面。
+
+<Image
+  alt={`MERN Shop`}
+  src={`/static/images/projects/mern-shop/product_detail.png`}
+  width={2547}
+  height={1308}
+/>
+
+### 購物車
+
+在首頁按下加入購物車後，到購物車頁面即可看到，購物車資料是用 LocalStorage 的方式來儲存。
+按下結帳後進入結帳流程，後面包括 PayPal 付款的等等。
+
+<Image
+  alt={`MERN Shop`}
+  src={`/static/images/projects/mern-shop/cart.png`}
+  width={2532}
+  height={905}
+/>
+
+### 使用者資料
+
+會員在登入後可以修改自己的資料及查看訂單記錄。
+
+<Image
+  alt={`MERN Shop`}
+  src={`/static/images/projects/mern-shop/product_detail.png`}
+  width={2522}
+  height={1327}
+/>
+
+### 訂單管理頁面
+
+此頁面只有管理員權限才能查看，右側按鈕分別控制運送狀態及付款狀態，管理頁面另外還有商品及使用者等等。
+
+<Image
+  alt={`MERN Shop`}
+  src={`/static/images/projects/mern-shop/order_detail.png`}
+  width={2554}
+  height={1297}
+/>

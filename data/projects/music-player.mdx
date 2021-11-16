@@ -1,0 +1,27 @@
+---
+title: "Music Player"
+description: "僅利用 React Hooks 實現 state management 的音樂網站"
+tech: "React,Sass"
+url: "https://lemon14454-music-player.netlify.app/"
+github: "https://github.com/lemon14454/music-player"
+---
+
+<Image
+  alt={`Lofi Radio`}
+  src={`/static/images/projects/music-player/music-player.png`}
+  width={1604}
+  height={1380}
+  priority
+/>
+
+## Music Player
+
+一個非常簡單的音樂播放器，主要用來練習在沒有 Redux 的情況完成 state management，
+看了許多有關 state 的第三方套件討論，結論都是在使用它們前都必須問自己專案的規模是否有需要用到。
+所以在學習完 Redux 後決定回到最原生的 React Context。
+
+## Context API
+
+回頭看看這個早期做的作品，也發現許多關於 Context 不一樣的寫法，當初是用跟 Redux 一模一樣的方式，
+分別建立 Action 和 Reducer，並在各個 Component 中進行 Dispatch 來改變 State。
+而現在的話我會更傾向把 Context 與 Hook 做結合，詳細可至程式碼中的 **Context Template**。

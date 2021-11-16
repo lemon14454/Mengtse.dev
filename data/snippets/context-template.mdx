@@ -1,0 +1,51 @@
+---
+title: "Context Template"
+description: "Context Provider 的 Typescript 模板"
+logo: "react.png"
+---
+
+此處以 AuthProvider 做命名，使用時以當時情況做變更。
+
+```ts:AuthProvider.tsx
+import React, { useState, useContext, createContext } from "react";
+
+interface ContextInterface {
+  // 要傳出的變數型別
+}
+
+interface ProviderProps {
+  children?: React.ReactNode;
+}
+
+const AuthContext = createContext<ContextInterface | null>(null);
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export function AuthProvider({ children }: ProviderProps) {
+  // ...
+
+  const value = {
+  // 要傳出的變數
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+```
+
+記得將 Provider 包住將要下傳的 Component，這邊以 App 做範例。
+
+```ts:index.tsx
+import * as ReactDOM from "react-dom";
+import App from "./App";
+import { AuthProvider } from "./context/AuthProvider";
+
+ReactDOM.render(
+    <AuthProvider>
+        <App />
+    </AuthProvider>,
+  document.getElementById("root")
+);
+```

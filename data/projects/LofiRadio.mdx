@@ -1,0 +1,52 @@
+---
+title: "Lofi Radio"
+description: "利用 Web Socket 所製作的多人音樂播放器"
+tech: "React,Sass,Webpack,Socket.io,Firebase"
+url: "https://lemon-lofiradio.herokuapp.com/"
+github: "https://github.com/lemon14454/Lofi-Radio"
+---
+
+<Image
+  alt={`Lofi Radio`}
+  src={`/static/images/projects/LofiRadio/lofi-radio.png`}
+  width={1080}
+  height={540}
+  priority
+/>
+
+## Lofi Radio
+
+最近在研究 Web Socket 並且寫了一個簡單的聊天室網頁，但因為聊天室作品已經爛大街了所以想嘗試其他東西
+，後來想到之前做的音樂播放作品，就把它升級成可以多人聆聽的版本。但為了節省時間，所以只做成了只有一位主持人的模式，
+並非多個獨立房間，因此當主持人不在線上時一般使用者無法做其他操作。
+
+若主持人在線上，使用者可透過 Google 帳號登入網頁聆聽音樂，一般使用者可以在網頁中間看到主持人是否在線，
+網頁左側三個圖示由上至下分別表示 **靜音** **登出** **在線使用者** ，需注意的是因瀏覽器設計規定，
+靜音預設是打開的。
+
+## 使用技術
+
+- React
+- Sass
+- Webpack
+- Socket.io
+- Firebase
+
+雖然作品內使用了 Webpack 及 Firebase，由於這次重點不在這，所以沒有對 Webpack 設定檔有太多講究，
+而 Firebase 則是提供我 Google Auth 及儲存歌曲資料的平台。至於音樂來源是我去 [Chillhop](https://chillhop.com/)
+爬下來的。
+
+這次收穫較多的反而是對於 Sass 及 Context Hook 的使用。由於 Tailwind 實在是太方便了，
+導致有一段時間沒有在寫原生的 css/scss，不過經歷這次作品也算是硬逼自己去使用 Sass，
+才發現也是有不少厲害之處。以目前的經驗而言，若要開發動畫較多的網頁我可能不會再選擇 Tailwind 了。
+
+## 遭遇問題
+
+- 音樂或影片若已經在進行，在使用者開啟網頁時需為靜音狀態，並由使用者自己控制聲音，
+  這是當初瀏覽器為了避免騷擾人的廣告所做的設計。
+
+- audio.play() 或是其他關於音源或影片的操控皆是異步的，若指令在還沒被完成就下另一個指令則會出現[錯誤](https://developers.google.com/web/updates/2017/06/play-request-was-interrupted)。
+
+開發過程其實比預想的順利很多，即使是尚未熟悉的 WebSocket 也很少出現與他相關的 Bug。
+若真要說最令人挫折的果然還是音樂處理，包括拖動時間軸切換歌曲等等，在單人網頁的時候沒什麼問題，
+但要兼顧主持人及多位使用者時就出現單人不曾有的錯誤了。
