@@ -1,0 +1,61 @@
+---
+title: "我的 Git 疑難雜症"
+publishedAt: "2021-10-02"
+summary: "這邊文章紀錄我使用 Git 所遇到的問題"
+image: "/static/images/banner.jpeg"
+---
+
+這邊文章紀錄我使用 Git 所遇到的問題。
+
+## Local 與 Remote 端合併
+
+若今天我直接在 Github 上對文章或是程式碼進行一些 Typo 的修正並且 Commit 後，
+這樣 Remote 端就會比我的 Local 端多上一筆 Commit，這樣為了讓本地端跟上進度，
+我們可以用下列兩種方式。
+
+執行完 `git fetch` 只是代表將 Remote 端下載下來而已，還尚未對本地端做出改變，
+接下來還要用 `git merge` 來將 Local 及 Remote 合併在一起。
+
+```bash
+git fetch
+git merge origin/master
+git merge hello
+```
+
+另外還有一種比較簡單的方式就是直接使用 `git pull` 來達到與 Remote 端同步的效果，
+但似乎有一派人認為 fetch 及 merge 的方式比較安全，不過目前我沒遇過相關的問題。
+若在 remote 時後面有加上 `-u` 的話，此處後方就不用指定 origin master。
+
+```bash
+git pull
+git pull origin master   沒有 -u
+```
+
+## Branch
+
+由於在自己做作品時大部分都是獨立開發，所以也很少有機會真正去使用到 branch。
+branch 的主要就是不要讓新增的程式碼去影響到原本的主線或是其他人的程式，
+當然也可以被用在獨立開發，例如替自己的 App 新增功能時，不想要去影響到原本確認無誤的部分。
+
+```bash
+git branch -M main    現在好像都流行用 main 而不是 master 了
+git branch hello      新增 hello branch
+git branch -d hello   刪除 hello branch
+git checkout hello    切換 hello branch
+```
+
+## Merge Conflicts
+
+> Merge Conflicts happen when two commits affect the same line of code at the same time.
+
+若在不同的 branch 中，都對同一個文件中的同一行做出了什麼改變後進行 commit，
+之後再執行 merge 的時候，git 會不知道要用哪一個為主來進行合併，這時就會產生 merge conflict。
+若是使用 vscode 則可以直接透過 UI 點選要進行的變化，若想回上一步可以使用 abort 指令。
+
+若真的遇到這個問題，可以先用 `git diff` 來找出哪些檔案出了問題，再來選擇是要以哪條 branch 為主，
+或是兩個都留下 (往下擠一行) 的意思。
+
+```bash
+git diff
+git merge --abort
+```
