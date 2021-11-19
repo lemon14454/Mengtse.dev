@@ -59,3 +59,19 @@ git checkout hello    切換 hello branch
 git diff
 git merge --abort
 ```
+
+## Workflow
+
+結論，當與他人進行合作開發時，工作流程大致如下，另外記得養成在 Merge 前都要先從 origin master pull 的習慣。
+
+```bash
+git clone 'project'
+git branch hello
+git checkout hello
+git add .
+git commit -m 'message'
+git push -u origin hello
+git pull origin master
+```
+
+完成上述指令後，可以透過 Github 上的提示完成 Merge 或是透過指令，若後續不會再用到該 branch 記得刪掉。

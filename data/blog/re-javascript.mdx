@@ -9,11 +9,8 @@ image: "/static/images/banner.jpeg"
 
 1. [語法介紹](/blog/re-javascript#1)
 2. [語言特性](/blog/re-javascript#2)
-3. [寫作風格](/blog/re-javascript#3)
-4. [物件導向](/blog/re-javascript#4)
-5. [物件繼承](/blog/re-javascript#5)
-6. [設計模式](/blog/re-javascript#6)
-7. [語法應用](/blog/re-javascript#7)
+3. [物件導向](/blog/re-javascript#3)
+4. [物件繼承](/blog/re-javascript#4)
 
 ## 語法介紹<a name="1" />
 
@@ -139,12 +136,233 @@ switch (n) {
 
 ## 語言特性<a name="2" />
 
-## 寫作風格<a name="3" />
+### 範圍鏈 Scope Chain
 
-## 物件導向<a name="4" />
+一個變數可以作用的範圍，若使用前未經宣告(var)，就會自動變成全域變數。
+若是在 function 區域內宣告的變數，這個變數只能在這個區域內使用。
 
-## 物件繼承<a name="5" />
+### 閉包 Closure
 
-## 設計模式<a name="6" />
+用一句話解釋閉包就是，一個函式可操作另外一個函式作用範圍內的變數，而且函式要為巢狀結構才會形成閉包。
+若內層函式使用到外層的區域變數時，外層中的變數狀態會被內層保留下來形成封閉狀態，這時只有內層函式可以存取該變數，
+來達到保護變數內容的目的。閉包有可能會造成佔用記憶體的問題，所以盡量有目的性的使用。
 
-## 語法應用<a name="7" />
+```javascript
+var b;
+// 迴圈內又有迴圈即巢狀迴圈
+function outer() {
+  var a = 100;
+  function inner() {
+    console.log(a);
+  }
+  b = inner;
+}
+outer();
+b(); // 100
+```
+
+看看另外一個相對實用一點的範例，假設我們需要一個每次加一的計數器，可以透過閉包來達成。
+下面這個例子中的 count 在外部是無法碰觸到的，同時也因為閉包的關係，count 的值被保留了下來。
+
+```javascript
+var add = (function () {
+  var count = 0;
+  return function () {
+    return (count += 1);
+  };
+})();
+console.log(add()); // 1
+console.log(add()); // 2
+console.log(add()); // 3
+```
+
+下面這是一個經典問題，預期應該依序顯示 0,1,2,3,4，但卻顯示 5,5,5,5,5 了。首先我們先以作用域的角度來看，
+**For 迴圈使用 var 宣告的 i 是全域變數**，這牽扯到 JS 在 ES6 以前的設計，迴圈跑完後 i 停在 5，
+至於為什麼是一次印出五個 5 我留到另外一篇文章詳細說明，這邊直接給出結論，我們可以透過將 var 改成 let 來解決。
+
+```javascript
+for (var i = 0; i < 5; i++) {
+  setTimeout(function () {
+    console.log(i);
+  }, i * 1000);
+}
+```
+
+面對這個問題也可以使用閉包來解決，目的也是為了在迴圈內產生一個區域變數而非全域變數。
+
+```javascript
+for (var i = 0; i < 5; i++) {
+  (function (i) {
+    setTimeout(function () {
+      console.log(i);
+    }, i * 1000);
+  })(i);
+}
+```
+
+### Currying
+
+Currying 是利用閉包將傳入的變數保存下來，將多個參數的函式轉變成只接受一個參數，
+簡化傳入參數的一種方式。好處是提高程式的彈性和可讀性、易於重複利用。
+
+```javascript
+function cube(height) {
+  return function (width) {
+    return function (depth) {
+      return height * width * depth;
+    };
+  };
+}
+
+console.log(cube(3)(2)(1)); // 6
+var square = cube(3);
+var volume = square(2);
+console.log(volume(1)); // 6
+console.log(volume(2)); // 12
+```
+
+### Hoisting
+
+hoisting 是把宣告提升到該作用域的最頂端，但僅針對宣告，值的設定並不影響。
+
+```javascript
+var a = 123;
+(function () {
+  // var a; 僅有宣告被 hoist 上來，但值沒有被指定。
+  console.log(a); // undefined
+  var a = 10;
+})();
+console.log(a); // 123
+```
+
+看看另外一個經典面試考題。
+
+```javascript
+var a = 1;
+function hoisting() {
+  // var a; Hoist 但值沒有被指定，所以為 undefined
+  if (!a) {
+    var a = 2;
+  }
+  console.log(a); // 2
+}
+hoisting();
+```
+
+## 物件導向<a name="3" />
+
+JavaScript 在 ES5 的時候沒有 class 語法，而是在 ES6 的時候才新增的，
+所以一般 JavaScript 使用 function 來代替 class。與一般的物件導向不一樣，
+JavaScript 是採用 Prototype-based (基於原型) 而不是 Class-Based (基於類別)。
+
+### 一句話解釋原型鏈
+
+每一個物件都有原型，這樣一個牽一個、層層相依的從屬關係，我們會把它們叫做原型鏈（Prototype Chain)。
+
+- 假設 arr 是陣列，其原型為 Array
+- `arr.__proto__` 是陣列的原型，原型是 Object
+- `arr.__proto__.__proto__` 是物件的原型，原型是 null
+- `arr.__proto__.__proto__.__proto__` 是 null
+
+### Prototype 原型
+
+- 類別才會有 prototype
+- 物件才會有 `__proto__` (原型鏈)
+
+接下來我們都以下方程式碼來當作範例。
+
+```JavaScript
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+  this.talk = function() {
+      console.log('Hello');
+  }
+};
+
+let Tom = new Person("Tom", 22);
+let Lemon = new Person("Lemon", 18);
+```
+
+在 JavaScript 裡每個 Function 都會有 prototype 這個屬性，若我們將其印出來，
+就可以發現裡面有另外兩個屬性分別是 建構子 constructor 及一個 Prototype 物件 。
+可以發現這個建構子就是我們的 Function 本身，所以如果繼續探索下去其實是一個無止境的循環。
+
+若印出 Tom 的 `__proto__` 則會發現和上方的 prototype 是一模一樣的。
+因為 Person 只是建構函式 (function) 而非真正的 class，所以 JavaScript
+用 prototype 的方式將建構函式給繼承下去。現在我們得出一個結論，當在建立實例時，
+實例的 `__proto__` 會被指向建構函式的 prototype。
+
+```JavaScript
+console.log(Person.prototype)
+// constructor: ƒ Person(name, age)
+// [[Prototype]]: Object 可理解是 __proto__
+
+console.log(Tom.__proto__)
+// constructor: ƒ Person(name, age)
+// [[Prototype]]: Object
+```
+
+```JavaScript
+let f = function () {
+   this.a = 1;
+   this.b = 2;
+}
+let o = new f(); // {a: 1, b: 2}
+f.prototype.b = 3;
+f.prototype.c = 4;
+console.log(o.a); // 1
+console.log(o.b); // 2
+console.log(o.c); // 4
+console.log(o.d); // undefined
+```
+
+我們也可以利用 Prototype 來替物件加上方法。
+
+```JavaScript
+Array.prototype.sum = function() {
+    var output = 0;
+    for(var i = 0; i < this.length; i++) {
+        output += this[i];
+    }
+    return output;
+}
+```
+
+### 物件資源浪費
+
+延續上方的程式碼來看下方的例子，兩個物件分明都是從同個模子刻出來的，但他們的 Talk Function 卻是不等的，
+意即它們是各自獨立的，如果大量建造物件則會造成資源浪費，但是我們可以將方法建立在 prototype 裡面來避免這種狀況。
+
+```JavaScript
+let Tom = new Person("Tom", 22);
+let Lemon = new Person("Lemon", 18);
+console.log(Tom.talk === Lemon.talk) // false
+Person.prototype.talk = function() {
+    console.log("hello");
+};
+
+let arr1 = new Array();
+let arr2 = new Array();
+console.log(arr1.forEach === arr2.forEach); // true
+```
+
+### New
+
+預設在 Function 中直接呼叫 this 的話會是對應到全域的 window 物件，
+透過 new 的話就是把 this 指定到物件上，而系統也會在 Function 結束時從內部自行回傳自己。
+
+```JavaScript
+function show1() {
+    console.log(this); // window
+}
+show1();
+
+function show2() {
+    console.log(this); // show2 物件
+    // return this
+}
+new show2();
+```
+
+## 物件繼承<a name="4" />

@@ -1,0 +1,31 @@
+---
+title: "Line Clone"
+description: "仿製 Line 官網以及動畫練習"
+tech: "React,Styled Components,Framer motion"
+url: "https://lemon-line-clone.netlify.app/"
+github: "https://github.com/lemon14454/Line-clone"
+---
+
+<Image
+  alt={`Line Clone`}
+  src={`/static/images/projects/LineClone/line-clone.png`}
+  width={2769}
+  height={1352}
+  priority
+/>
+
+## Line Clone
+
+想要練習現在主流網站的架構，也想順便結合一些動畫，就從我比較喜愛的 Line 風格來下手，
+作品與原版有許多不同之處。這次使用 Styled Components 及 Framer Motion 作為工具，
+很巧的其實兩個套件互相蠻搭的，不過因為這次作品僅是切版練習，沒有真正的把 Styled Components 的力量發揮出來。
+
+## 遭遇問題
+
+由於效率因素，這次直接使用 `Create React App` 來建立專案，結果後來發現好像會跟 Framer motion 5.0 以上的版本衝突發生錯誤，
+而為了達到滾動至某個視窗位置 (Scroll on View) 的功能，原本想用 Framer motion 內建的功能，但那個功能似乎只有在新版才有。
+後來發現了另外一個可以處理滾動視窗這類問題的套件 react-intersection-observer 就解決了此問題。
+
+另外因為比較少製作這種圖片很多的網頁，在製作 RWD 時嘗試了不同方法，後來發現在 `height` 上設置 **vw** 單位是一種不錯的選擇，
+也可以在 `font-size` 上設置 `calc(Xrem + Yvw)` 來達到 RWD 的效果。最近好像流行一種用 `clamp` 的方式，改天會針對新時代的
+RWD 再寫一篇文章。
