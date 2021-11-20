@@ -366,3 +366,87 @@ new show2();
 ```
 
 ## 物件繼承<a name="4" />
+
+### Call、Bind、Apply
+
+這三者的共同功能就是用第一個參數去改變函式中的 This。
+
+```JavaScript
+function show(a, b) {
+      console.log(this, a, b);
+}
+show.call({}, 5, 10);
+```
+
+而差別在於接下來的參數，call 是一個一個傳遞，而 apply 是使用陣列，
+而 bind 與 call 相似，但是它並不會真的執行函式，而是回傳新函式，
+最下面的範例是因為在函式後街上括號才讓它直接執行。
+
+```JavaScript
+function base() {
+      console.log(this, arguments);
+}
+base.call({name:"A"}, 2, 3);
+base.apply({name:"B"}, [2, 3]);
+
+base.bind({name:"C"}, 2 ,3);
+base.bind({name:"C"})(2, 3);
+```
+
+### 透過 Call 來繼承
+
+可以看到下方範例，使用 Call 可以繼承屬性及方法，但是在原型中的函式卻無法在子類別使用。
+
+```JavaScript
+function Person() {
+    this.age = 22;
+    this.hello = function() {
+         console.log("hello");
+    };
+}
+Person.prototype.show = function() {
+      console.log(this.age);
+};
+function Tom() {
+     Person.call(this);
+}
+var obj = new Tom();
+console.log(obj.age); // 22
+obj.hello(); // hello
+obj.show(); // error
+```
+
+### 共享參考
+
+共享參考就是下面這個狀況，因為參數在傳遞時是將記憶體位址複製到另一個身上，
+所以當你修改它的內容時，實際上是修改他的參考。使用 slice function 即可解決狀況。
+因為用了 slice 函式回傳的就不是原本的記憶體位址了，而是它的值。
+
+```JavaScript
+var arr1 = [1, 2, 3];
+var arr2 = arr1;
+// var arr2 = arr1.slice()
+arr2.push(4);
+console.log(arr1); // [1,2,3,4]
+console.log(arr2); // [1,2,3,4]
+```
+
+### 如何繼承原型方法
+
+在上上一個例子我們無法繼承原型方法，而下方是使用了共享參考的方式來傳遞。
+但若之後子類別的原型有所變動也會影響父類別，所以這並不是一個好的方法。
+而不使用共享參考的方式，就是將 B 的原型指向 A 物件。
+
+```JavaScript
+function A() {
+2:      this.abc = 12;
+}
+A.prototype.show = function() {
+    console.log(this.abc);
+};
+function B() {
+    A.call(this);
+}
+B.prototype = A.prototype; // bad
+B.prototype = new A(); // better
+```
