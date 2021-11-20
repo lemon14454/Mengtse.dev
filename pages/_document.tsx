@@ -5,7 +5,7 @@ export default function Document(props) {
     <Html lang="en">
       <Head>
         <link
-          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
           rel="stylesheet"
         />
         <link href="/static/favicons/favicon.ico" rel="shortcut icon" />

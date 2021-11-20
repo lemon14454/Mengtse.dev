@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Container from "components/Container";
+import Skilltree from "components/Skilltree";
 // import Skilltree from "components/Skilltree";
 
 export default function Home() {
@@ -34,7 +35,7 @@ export default function Home() {
             />
           </div>
         </div>
-        {/* <Skilltree /> */}
+        <Skilltree />
       </div>
     </Container>
   );
