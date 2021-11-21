@@ -5,12 +5,15 @@ summary: "這是一篇我重新認識 Javascript 的筆記，其中包含原型�
 image: "/static/images/banner.jpeg"
 ---
 
+此篇文章並非詳盡的 JavaScript 教學，而是紀錄我某些較不熟悉的區塊而已。
+
 ## 目錄
 
 1. [語法介紹](/blog/re-javascript#1)
 2. [語言特性](/blog/re-javascript#2)
 3. [物件導向](/blog/re-javascript#3)
 4. [物件繼承](/blog/re-javascript#4)
+5. [ES6 語法](/blog/re-javascript#5)
 
 ## 語法介紹<a name="1" />
 
@@ -449,4 +452,25 @@ function B() {
 }
 B.prototype = A.prototype; // bad
 B.prototype = new A(); // better
+```
+
+## 語法介紹<a name="5" />
+
+### 變數範圍鏈 let 與 var 的不同
+
+ES6 的 let 是使用括號 `{} ()` 來界定有效範圍而 var 則是以 Function。而 IE8~10 不支援 ES6，
+仍然採用 hoisting 來界定。透過下面的例子我們知道 let 其實也會 hoist 只是無法被操作，
+這個狀況我們稱為暫時的死區 Temporal Dead Zone。
+
+```JavaScript
+console.log(a);
+let a = 1; // a is not defined
+
+{
+  let b = 2;
+  {
+    console.log(b) // Cannot access 'b' before initialization
+    let b = 1;
+  }
+}
 ```
