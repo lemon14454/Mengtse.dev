@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import {
   HtmlSVG,
-  NodeSVG,
   ReactSVG,
   ReduxSVG,
   SassSVG,
@@ -95,11 +94,6 @@ const Skilltree = () => {
         name="Typescript"
         logo={<TypescriptSVG />}
         description="仍在學習階段，但大部分作品皆用TS來開發"
-      />
-      <Skill
-        name="NodeJS、Express"
-        logo={<NodeSVG />}
-        description="實作過基本的 MVC 架構的電商後端"
       />
     </motion.div>
   );

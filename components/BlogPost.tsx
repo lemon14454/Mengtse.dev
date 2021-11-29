@@ -8,10 +8,10 @@ export default function BlogPost({
 }: Pick<Blog, "title" | "summary" | "slug">) {
   return (
     <Link href={`/blog/${slug}`}>
-      <a className="w-full">
+      <a className="w-full group">
         <div className="w-full mb-8">
           <div className="flex flex-col justify-between md:flex-row">
-            <h4 className="w-full mb-2 text-lg font-medium text-gray-900 md:text-xl dark:text-gray-100">
+            <h4 className="w-full mb-2 text-lg font-medium text-gray-900 md:text-xl dark:text-gray-100 group-hover:text-purple-500 group-hover:scale-[99%] transition-all">
               {title}
             </h4>
           </div>
