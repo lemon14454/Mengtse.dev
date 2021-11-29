@@ -5,4 +5,92 @@ summary: "面試中可能會遇到的 React 問題"
 image: "/static/images/banner.jpeg"
 ---
 
-##
+## React
+
+- 並非完整框架，只是 UI 函式庫所以要裝很多外部套件
+- 整合到 MVC 架構需要複雜的配置
+- 將使用者介面拆解成可以重複使用的元件
+- 可以做到只更新畫面中部分的元件讓效能更好
+
+## Props 與 State
+
+- State: 元件中的資料，可以在元件中操作來改變值。
+- Props: 用來設定元件初始化的相關資料，無法透過操作改變值 (從其他元件傳來)。
+
+## JSX
+
+React 的語法糖，讓開發者可以在元件中寫類似 HTML 的語法。
+但瀏覽器本身無法讀取 JSX，所以需要 Babel 這樣的工具來將其轉換為 Javascript。
+
+## Redux
+
+Redux 是一個用來處理 global state 的工具，也可以用在 React 以外的框架。
+
+- Action: 用來描述發生什麼事情的地方 (訊號的名稱)
+- Reducer: 確定 State 該如何變化的地方 (接收訊號後的行動)
+- Store: Global State 儲存的地方
+- Dispatch: 發射訊號 (Action)
+
+## Real DOM 與 Virtual DOM
+
+| Real DOM             | Virtual DOM       |
+| -------------------- | ----------------- |
+| 更新緩慢             | 更新較快          |
+| 可以直接更新 HTML    | 無法直接更新 HTML |
+| 元件更新則創建新 DOM | 元件刷新更新 JSX  |
+| DOM 操作代價高       | DOM 操作簡單      |
+| 消耗內存較多         | 消耗很少          |
+
+## Virtual DOM
+
+瀏覽器載入網頁的過程會把 HTML 的內容轉成資料結構放在執行環境中，
+那個結構我們稱之為 Document Object Model (DOM)。
+
+為了避免每次互動引發整個 DOM 的改變，進而產生不必要的 reflow 或 repaint，
+前端框架在設計與實作上，會先將原本的 DOM 結構複製一份出來。每當有事件產生，
+或是資料變動的時候，前端框架會先建立一個新的 virtual DOM，接著
+計算出新舊 virtual DOM 之間的差別，最後才會操作真正的 DOM，
+並僅僅操作有變動的部分，藉此避免不必要的 reflow 或 repaint 以提升效能。
+
+而透過演算法比對並更新的過程播稱作 reconcilation，而 Fiber 則是 React v16
+後新的 reconcilation 演算法。
+
+## 生命週期 Life Cycle
+
+雖說沒有在使用 Class Component 了，但還是稍微瞭解了一下，
+元件從出現到消失分三部分 Mount > Update > Unmount，並按照下方順序依據往下。
+
+- Mount: 出現在瀏覽器的 DOM 上
+
+  - constructor()
+  - static getDerivedStateFromProps()
+  - render()
+  - componentDidMount()
+
+- Update: Props 或是 State 變化造成元件更新
+
+  - getDerivedStateFromProps()
+  - shouldComponentUpdate()
+  - render()
+  - getSnapshotBeforeUpdate()
+  - componentDidUpdate()
+
+- Unmounting: 從瀏覽器中的 DOM 中移除
+  - componentWillMount()
+
+## 元件渲染的三個狀態
+
+元件從 Props 或 State 變化的時候的過程，主要分為兩階段 Render 及 Commit，
+進行完 Render 的計算後才會 Commit 到真正的 DOM 尚，而 Commit 前又有一個 Pre-commit。
+
+- Render
+- Pre-commit
+- Commit
+
+<Image
+  alt={`Life Cycle`}
+  src={`/static/images/blogs/react/lifecycle.jpeg`}
+  width={1674}
+  height={917}
+  priority
+/>

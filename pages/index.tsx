@@ -6,7 +6,7 @@ import Skilltree from "components/Skilltree";
 export default function Home() {
   return (
     <Container>
-      <div className="flex flex-col justify-center items-start max-w-2xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
+      <div className="flex flex-col items-start max-w-2xl border-gray-200 dark:border-gray-700 mx-auto pb-16">
         <div className="flex flex-col-reverse sm:flex-row items-start">
           <div className="flex flex-col pr-8">
             <div className="flex items-center gap-4">
@@ -20,7 +20,7 @@ export default function Home() {
             <h2 className="text-green-400 dark:text-green-500 mb-4">
               @lemon14454@gmail.com
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-16">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               我畢業於高雄科技大學資訊管理系，自大學開始研究網頁技術，目前在做前端開發但也擁有基礎的後端開發經驗。我主要的開發工具為
               React、Redux、Typescript、TailwindCSS 及 Webpack。
             </p>
