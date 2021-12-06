@@ -1,0 +1,268 @@
+---
+title: "前端知識"
+publishedAt: "2021-10-02"
+summary: "紀錄一些前端觀念問題"
+image: "/static/images/banner.jpeg"
+---
+
+## Mutable, Immutable
+
+中文翻譯就是可變與不可變的，而在 Javascript 中所有的原始型別皆是 Immutable 的。
+而 Immutable 的作用就是當一個變數參照另外一個變數的值時，會另外再指派一個記憶體位址，
+另外一個變數的改變不會影響原本的變數。而像物件就是 Mutable，其效果就是相反，
+兩個變數會互相影響，其原本的設計理念是為了優化效能，但這樣容易造成許多 Bug 或非期望的效果，
+讓開發者很難找到錯誤在哪裡，這也是為什麼後來 Functional Programming 崛起的一個原因，
+因為它正好解決了這個問題。
+
+## 同步 非同步
+
+由於 Javascript 是單執行緒的語言，所以一次只能做一件事情，我們稱這個為同步。
+但因為瀏覽器所以提供的 WebAPI 例如 setTimeout、XMLHTTPRequest 不在 V8 引擎中，
+當瀏覽器接收到要呼叫他們的時候，可以和你的程式碼一起執行。所以在瀏覽器中，
+只有 Javascript 引擎是同步的，但透過跟 WebAPI 溝通可以達到非同步的事件處理。
+
+## script defer and async
+
+控制好 script 的載入順序可以有效提升效能。
+
+因為 HTML 是一行行往下讀取的，所以當瀏覽器讀取到 script 的時候，
+會暫停解析 DOM ，並開始下載 script 的內容且立刻執行。而這會造成 DOM
+樹在就建構未完成就執行 script，某些有關 DOM 操作的程式碼就會無法正常運作，
+使用者可能也會得到卡畫面的結果。
+
+假設今天將 script 檔放在 body 的最下面，可以避免 DOM 未完成就執行的狀況，
+可是當 HTML 越來越大，即使這樣的操作也會造成 DOM 讀取時間延長也會讓使用者感受到延遲感。
+而面對這樣的狀況我們可以使用在 script 上使用 defer 或 asycn 來幫助我們。
+
+- defer: 瀏覽器會繼續渲染畫面，不會卡在 script，在 `DOMContentLoaded`
+  執行之前，會由上到下依序觸發。
+
+- async: script 會在它解析好的時候被異步執行且不保證順序，但這時 DOM 有可能尚未解析完成，
+  通常用在頁面廣告之類的獨立模組，避免造成不好的使用者體驗。
+
+## script type="module"
+
+在加上這一屬性之後，瀏覽器會將其認為是一個模組，解析規則與執行環境會不同。
+script 預設會像 defer 的效果一樣在渲染完成後執行，所以不能配合 defer 來使用，
+但可以使用 async 改為下載完及執行使用。
+
+## 瀏覽器渲染
+
+瀏覽器的渲染過程大致如下，順序由上往下。
+
+- HTML => DOM Tree
+- CSS => CSSOM Tree
+- DOM + CSSOM = Render Tree
+- Layout: 將 Render Tree 上的相對屬性轉換成絕對屬性的過程
+- Reflow: 計算 Render Tree **物理**屬性
+- Repaint: 輸出至畫面
+
+## Reflow Repaint
+
+- 修改 width => Reflow => Repaint
+- 修改 color => Repaint
+
+Reflow 會從 Render Tree 的根節點出發，計算每一元素的位置、大小及浮動 (物理屬性)，
+這步驟會耗費大量的運算資源，而只要牽扯到 CSS、瀏覽器視窗、輸入框內容、DOM 操作等等，
+都會觸發 Reflow。
+
+Repaint 就沒那麼複雜，單純將計算結果輸出至畫面上，所以有任何元素的樣式變更都會觸發到。
+所以其實並不是每個元素的改變都會觸發到 Reflow 但 Repaint 是一定會的，我們可以透過這點來優化效能。
+
+- 使用 translate 取代 top 之類的定位屬性
+- 避免使用 table (物理屬性會互相影響)
+- 若需修改樣式，盡量一次改一批，而不是逐個改
+- 盡量減少 Reflow 影響範圍 (減少更動物理屬性)
+- 避免 HTML 或 CSS 層數太多，加快解析
+
+## z-index 與 Stacking Context
+
+網頁排版時，我們會使用 absolute、relative、fixed 等 position 來控制元素的位置，
+這可以讓元素從原本的位置移動甚至離開原本的框架內，而這時會產生出一個新的堆疊環境(Stacking Context)，
+它的排列此時與其他元素的位置就沒什麼太大的關係，可以理解成圖層的概念。
+
+而這一新的 Stacking Context 內的元素屬性變動是不會是不會觸發其他環境的 Reflow 的。
+而 z-index 只會在同一個環境中做比較，所以有時候才會發生不管怎麼調都仍在底層的狀態出現。
+
+因此結合上面 Reflow 的概念，若要達成增加效能，盡量讓改動頻繁的地方建立單獨的圖層，
+同時也要避免圖層過多。
+
+## 事件代理 event delegation
+
+```HTML
+<ul>
+  <li></li>
+  <li></li>
+  <li></li>
+</ul>
+```
+
+假設今天我們要在 li 增添事件監聽，最直接的方式就是逐個設定，但是當監聽事件數量一多，
+就會造成記憶體消耗。而為了解決這個問題，我們可以將事件監聽設在外層的 ul 透過它來往下設定，
+減少事件監聽的數量來達成，這個動作稱為事件代理。
+
+而用完的事件監聽也要記得刪掉來提高效能，若是使用 React 或 Vue 等框架的內建功能，
+他們會自動幫你做這個動作，除非是使用人為加上的方式。
+
+## Event Loop
+
+<Image
+  alt={`Event Loop`}
+  src={`/static/images/blogs/frontend/event-loop.svg`}
+  width={295}
+  height={271}
+/>
+
+- Stack: Function 的 Call Stack，當 Function 執行完便會從這堆疊移除，若 Function 中還有
+  Function 則會繼續堆疊。
+
+- WebAPI: 提供 Javascript setTimeout、DOM 控制等功能。
+
+- Queue: 列隊中的任務，當 Stack 為空時會將排第一個的任務送過去。
+
+- Heap: 記憶體位置，儲存變數之類的東西。
+
+JavaScript 是單執行緒 (Single thread) 的語言，為了避免執行緒被佔用導致卡死，
+Javascript 擁有事件循環 (Event Loop) 的機制。而這個機制實際上就是在反覆確認 Stack 是否為空，
+並將 Queue 送過去。而網頁為了有效的與使用者互動，我們還需要瀏覽器的 WebAPI，
+來完成 Javascript 本身做不到的事情。
+
+```Javascript
+for(var i = 1; i <= 5; i++) {
+  setTimeout(function() {
+   console.log(i)
+  }, 1000 * i)
+}
+```
+
+所以在我們知道 Event Loop 之後再回來看這個經典題目，就可以知道為什麼結果會這麼奇怪了。
+因為 setTimeout 所產生的 timer 都被 WebAPI 排進 Queue 裡面了，而直到 Stack 為空之前，
+Queue 裡面的東西都不會被執行，而當 Stack 清空準備執行 Queue 裡面的 5 個 Function 的時候，
+這時的 i 已經被累加完畢了，為了解決這個問題，我們需要將每次累加的 i 值給儲存下來，我們可以採以下三種方式。
+
+```Javascript
+// 1. 傳入 i 至 setTimeout
+setTimeout(function(x) {
+  console.log(x)
+}, 1000 * i, i)
+
+// 2. IIFE 製造作用域
+(function (x) {
+  setTimtout(function() {
+    console.log(x)
+  }, 1000 * x)
+})(i)
+
+// 3. var => let 區域變數
+for(var i = 1; i <= 5; i++) {
+  // ...
+}
+```
+
+## This
+
+This 本身意思其實很好理解，就是物件本身的 instance，而在全域中印出 this 則會是 window。
+若要把每個狀況的 This 指向哪裡都弄懂不是一件簡單的事情，而這裡我們用一個簡單的方法來應付大部分情況。
+就是每次呼叫 function 時，都在腦袋中轉換成 call 的形式來看。將函式以前的物件(若有多層)丟入 Call 中，
+我們就可以得知該 function 的 this 會是什麼了。
+
+而除此之外還有一點要注意，就是箭頭函式與這邊舉例的狀況又會不一樣，結論來說就是在宣告它的地方的 This 是什麼，
+它的 This 就是什麼。
+
+> This 是動態的，要透過觀察 Function 如何被呼叫才能知道 This 指向哪裡。
+
+```Javascript
+const obj = {
+  value: 1,
+  hello: function() {
+    console.log(this.value)
+  },
+  inner: {
+    value: 2,
+    hello: function() {
+      console.log(this.value)
+    }
+  }
+}
+
+const obj2 = obj.inner
+const hello = obj.inner.hello
+obj.inner.hello() // obj.inner.hello.call(obj.inner) => 2
+obj2.hello() // obj2.hello.call(obj2) => 2
+hello() // hello.call() => undefined
+```
+
+## SPA SSR SEO 的關係
+
+SPA 簡單來說就是一頁式網站，使用者通常不會在切換頁面時看到網頁重新整理的狀況出現，
+它背後的做法就是不管是哪個頁面的內容，都是透過 Javascript 動態的去產生內容，
+而原生的 index.html 就是一個空殼的感覺。這個做法與先前的 MVC 架構所產生的 MPA 有大大的不同，
+因為這個新的做法讓 MVC 中的 view 就無用武之地了，因為所有的 request 皆從同一頁面中發出去。
+
+因為 SPA 的做法會讓第一次渲染的 HTML 變得空蕩蕩，而這會讓搜尋引擎不利於搜尋到你網頁。
+這邊的問題出在第一次渲染不能讓搜尋引擎搜到有意義的資料，那為了解決這個問題，SSR 就出現了。
+透過 SSR 將內容先準備好並 render 出來，搜尋引擎自然也能順利爬到，而第一個渲染之後的操作，
+依然像 SPA 一樣即可保持雙方的優點。
+
+## 網站效能
+
+> 提升網站效能的兩個重點在於 **載入資源** 及 **畫面渲染**
+
+- 減少資源下載內容: webpack 壓縮程式碼
+- lazy loading: 只讀取使用者用到的檔案
+- Cache: 不讓使用者重複下載使用過的資料
+- 減少 Reflow Repaint: 上面段落提過
+
+## SQL Injection
+
+透過在表單中輸入 SQL 語法做為參數傳入原本的查詢句並合併，進而達成任意更改資料、
+查詢、或刪除等目的。此攻擊法雖然常見但也很好解決，可以透過檢查輸入資料、跳脫字元、
+以及設置使用者權限等方式避免。
+
+## XSS Cross-site scripting
+
+將使用者輸入的內容直接放在網站時容易發生，例如討論區或是論壇等等，
+惡意使用者會將 script 寫入表單中，若開發者沒有對其輸入內容做檢查就有可能遭到 XSS。
+而既然是直接將 JavaScript 寫入的話就可以造成許多問題了，這邊就不詳細贅述。
+
+## CSRF Cross Site Request Forgery
+
+CSRF 就是在不同的 domain 偽造出像是本人發出的 request。
+直接舉例實際狀況，假設今天有惡意使用者知道某間銀行的轉帳 API 是什麼，
+而他將這個 API 嵌進自己網頁的 img 或是 a 的 link 裡面，當有人訪問他的網頁時，
+要是剛好這個人的 cookie 存有他銀行的登入資訊，他的錢就會因為呼叫了這個 API 而被轉走。
+
+而面對這種狀況，才會有所謂的 CORS 的問題，也就是在伺服器端我們需要嚴格把關 request 的來源，
+當然只有這個不能很完善的防禦，可以加上簡訊驗證碼及 CSRF Token 來解決。
+或是一開始在自家的 cookie 被建立時加上 SameSite 屬性確保 cookie 只能在原本的 domain 使用。
+
+## 輸入網址到網頁渲染 - 簡易版
+
+- 輸入網址
+- 檢查本地 DNS
+- 檢查電腦 host 檔
+- 向 DNS 伺服器發起詢問並得到 IP
+
+TCP 三項交握
+
+- Client: 跟目標 IP 說要建立連線
+- Server: Server 回傳收到請求
+- Client: 跟 Server 説準備傳送資料
+- 依照 IP 及 PORT 經 TCP 連線送出封包
+- 伺服器回應請求，產出的頁面回傳至瀏覽器
+
+開始渲染
+
+- 解析 HTML 架構 => DOM Tree
+- 判斷 script 是否背景下載或是有無快取
+- CSS => CSSOM Tree
+- 疊加後產生 Render Tree
+- 網頁繪製完畢，使用者可開始互動，觸發 DOM 事件及 Event Loop
+
+## LocalStorage Cookie Session
+
+| Cookie                     | LocalStorage              | Session        |
+| -------------------------- | ------------------------- | -------------- |
+| 4K                         | 5MB                       | 5Mb            |
+| 可自行設定失效時間         | 需手動清除                | 關閉頁面後消失 |
+| 攜帶在 HTTP 中進行 request | 僅在瀏覽器，不參與 Server |

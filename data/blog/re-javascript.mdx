@@ -146,7 +146,7 @@ switch (n) {
 
 ### 閉包 Closure
 
-用一句話解釋閉包就是，一個函式可操作另外一個函式作用範圍內的變數，而且函式要為巢狀結構才會形成閉包。
+用一句話解釋閉包就是，將外層變數包在內層來使用的方法就是閉包，而且函式要為巢狀結構才會形成閉包。
 若內層函式使用到外層的區域變數時，外層中的變數狀態會被內層保留下來形成封閉狀態，這時只有內層函式可以存取該變數，
 來達到保護變數內容的目的。閉包有可能會造成佔用記憶體的問題，所以盡量有目的性的使用。
 
@@ -376,7 +376,7 @@ new show2();
 
 ```JavaScript
 function show(a, b) {
-      console.log(this, a, b);
+    console.log(this, a, b);
 }
 show.call({}, 5, 10);
 ```
@@ -387,7 +387,7 @@ show.call({}, 5, 10);
 
 ```JavaScript
 function base() {
-      console.log(this, arguments);
+    console.log(this, arguments);
 }
 base.call({name:"A"}, 2, 3);
 base.apply({name:"B"}, [2, 3]);
@@ -471,6 +471,30 @@ let a = 1; // a is not defined
   {
     console.log(b) // Cannot access 'b' before initialization
     let b = 1;
+  }
+}
+```
+
+### ES6 下的 Class 與繼承
+
+在 ES6 之前若要完成繼承需要完成一連串的原型設定，十分讓人頭疼，而在 ES6 語法出現後大大的解決了這個問題，
+可讀性及開發者體驗變得好了許多。
+
+```Javascript
+class Person {
+  constructor (name) {
+    this.name = name
+  }
+
+  hello() {
+    console.log(`hello ${this.name}`)
+  }
+}
+
+class Student extends Person {
+  constructor(name, age) {
+    super(name)
+    this.age = age
   }
 }
 ```

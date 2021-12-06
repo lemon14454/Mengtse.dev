@@ -90,7 +90,11 @@ const Skilltree = () => {
           logo={<TailwindSVG />}
           description="目前最熟悉的 CSS 開發方式及理解如何客製化設定"
         />
-        <Skill name="Sass" logo={<SassSVG />} description="會使用基本語法" />
+        <Skill
+          name="Sass"
+          logo={<SassSVG />}
+          description="會使用基本語法及用其製作響應式網頁"
+        />
         <Skill
           name="Webpack"
           logo={<WebpackSVG />}
