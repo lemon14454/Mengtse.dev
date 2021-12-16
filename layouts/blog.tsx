@@ -6,9 +6,6 @@ import type { PropsWithChildren } from "react";
 import type { Blog } from ".contentlayer/types";
 import { zhTW } from "date-fns/locale";
 
-// const editUrl = (slug) =>
-//   `https://github.com/leerob/leerob.io/edit/main/data/blog/${slug}.mdx`;
-
 export default function BlogLayout({
   children,
   post,
@@ -31,7 +28,7 @@ export default function BlogLayout({
               alt="沈孟澤"
               height={24}
               width={24}
-              src="/avatar.jpeg"
+              src="/avatar.jpg"
               className="rounded-full"
             />
             <p className="ml-2 text-sm text-gray-700 dark:text-gray-300">
@@ -49,15 +46,6 @@ export default function BlogLayout({
         <div className="w-full mt-4 prose dark:prose-dark max-w-none">
           {children}
         </div>
-        {/* <div className="text-sm text-gray-700 dark:text-gray-300">
-          <a
-            href={editUrl(post.slug)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {'Edit on GitHub'}
-          </a>
-        </div> */}
       </article>
     </Container>
   );

@@ -98,7 +98,7 @@ const Skilltree = () => {
         <Skill
           name="Webpack"
           logo={<WebpackSVG />}
-          description="仍在學習階段，但有實作過一些作品"
+          description="實作過一些作品並通過配置來優化效能"
         />
       </div>
     </motion.div>

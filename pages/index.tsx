@@ -22,7 +22,7 @@ export default function Home() {
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
               我畢業於高雄科技大學資訊管理系，自大學開始研究網頁技術，目前在做前端開發但也擁有基礎的後端開發經驗。我主要的開發工具為
-              React、Redux、Typescript、TailwindCSS 及 Webpack。
+              React、Redux、Typescript、TailwindCSS 及 Webpack。
             </p>
           </div>
           <div className="w-[80px] sm:w-[240px] relative mb-8 sm:mb-0 mr-auto">
@@ -30,7 +30,7 @@ export default function Home() {
               alt="Mengtse Shen"
               height={240}
               width={240}
-              src="/avatar.jpeg"
+              src="/avatar.jpg"
               className="rounded-full"
             />
           </div>

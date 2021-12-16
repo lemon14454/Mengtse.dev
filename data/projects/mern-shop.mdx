@@ -30,9 +30,18 @@ Webpack、Tailwind、Typescript、Redux Tool Kit 等技術，就將原本的專�
 - PaypalAPI
 - MongoDB、Express
 - Typescript
+- Firebase Storage
 
 對我而言其實一直不想自行去開發後端，所以這算是少數有自己著手的全端作品，基本的 MVC 架構及 Middleware
-等等還是瞭解的。
+等等還是瞭解的。關於商品圖片原本是直接放在本地端，很顯然這不是一個好的做法，因為不想去弄麻煩的 AWS S3
+所以就使用比較方便的 Firebase Storage 來解決圖片儲存的問題。
+
+## Webpack 及效能優化
+
+當初作品完成後，使用了 Google lighthouse 來看一下效能表現，最後發現了一些可以改善的問題。
+後來利用 Webpack 打包，並使用 uglifyJS 及 minifyCSS 來將 JS 及 CSS 檔案的空白給刪除，
+檔案大小順利得到縮減。但這還不夠，最後我們再使用 CompressionPlugin 將檔案壓縮成 gz，
+最後記得要在 Server 那邊多裝個 express-static-gzip 套件才能順利讓伺服器讀取 gzip 檔案。
 
 ## Redux 與 Typesciprt
 

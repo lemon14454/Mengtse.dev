@@ -38,7 +38,7 @@ const Container = ({ children, ...customMeta }) => {
   const meta = {
     title: "沈孟澤 Mengtse Shen",
     description: `沈孟澤的個人網頁，前端工程師，存放個人作品及文章的方。`,
-    image: "https://mengtse.dev/static/images/banner.png",
+    image: "https://mengtse.dev/static/images/banner.jpg",
     type: "website",
     ...customMeta,
   };

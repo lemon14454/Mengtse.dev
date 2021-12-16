@@ -1,0 +1,116 @@
+---
+title: "React Typescript Webpack 配置"
+description: "React 及 Typescript 在 Webpack 中的各項配置"
+logo: "webpack.png"
+---
+
+```javascript:webpack.config.js
+const path = require("path");
+const webpack = require("webpack");
+const Dotenv = require("dotenv-webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+
+module.exports = {
+  target: "web",
+  entry: path.resolve(__dirname, "./src/index.tsx"),
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(ts|js)x?$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              importLoaders: 1,
+            },
+          },
+          {
+            loader: "postcss-loader",
+          },
+        ],
+      },
+      {
+        test: /\.(?:ico|png|jpg|jpeg)$/i,
+        type: "asset/resource",
+      },
+    ],
+  },
+  optimization: {
+    minimizer: [new CssMinimizerPlugin(), new UglifyJsPlugin()],
+  },
+  output: {
+    publicPath: "/",
+    path: path.resolve(__dirname, "..", "./build"),
+    filename: "bundle.js",
+  },
+  mode: "production",
+  plugins: [
+    new HtmlWebpackPlugin({
+      favicon: path.resolve(__dirname, "./src/favicon/favicon.ico"),
+      template: path.resolve(__dirname, "./src/index.html"),
+    }),
+    new MiniCssExtractPlugin({
+      filename: "style.css",
+    }),
+    new CleanWebpackPlugin(),
+    new CompressionPlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production"),
+      },
+    }),
+    new Dotenv(),
+  ],
+  // devtool: "source-map",
+  devServer: {
+    proxy: {
+      "/api": "http://localhost:4000/",
+    },
+    port: 8080,
+    contentBase: path.resolve(__dirname, "dist"),
+  },
+};
+```
+
+```javascript:postcss.config.js
+module.exports = {
+  plugins: [require("autoprefixer")],
+};
+```
+
+```javascript:.babelrc
+{
+  "presets": [
+    "@babel/preset-env",
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic"
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-syntax-dynamic-import"
+  ]
+}
+```
